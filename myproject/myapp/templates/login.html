@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .login-form h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-form select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-form button {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+       
+        <h2>Login</h2>
+    
+        <form method="POST" action="{% url 'login' %}">
+            
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <!-- <select name="user_type" required>
+                <option value="">Select User Type</option>
+                <option value="Client">Client</option>
+                <option value="Agent">Agent</option>
+                <option value="Company">Company</option>
+            </select> -->
+          <small style="color: red;">
+            {% for message in messages %}
+            <h3 class="login">{{message}}</h3>
+            {% endfor %}
+          </small>
+            <button type="submit">Login</button>
+            
+        
+        </form>
+    </div>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: calc(100% - 40px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            padding-left: 40px;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-login:hover {
+            background-color: #45a049;
+        }
+
+        .social-login {
+            margin-top: 20px;
+        }
+
+        .social-login p {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-facebook,
+        .btn-google {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #3b5998; /* Facebook color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-facebook:hover,
+        .btn-google:hover {
+            background-color: #385898; /* Darker Facebook color on hover */
+        }
+
+        .btn-facebook i,
+        .btn-google i {
+            margin-right: 10px;
+        }
+
+        .btn-google {
+            background-color: #db4437; /* Google color */
+        }
+
+        .btn-google:hover {
+            background-color: #cc3127; /* Darker Google color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="form-group">
+            <i class="fas fa-user"></i>
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        {% for message in messages %}
+        <h3 class="login">{{message}}</h3>
+        {% endfor %}
+        <input type="submit" value="Login" class="btn-login">
+    </form>
+    <a href="/register"><i class="fas fa-user-plus"></i> Sign up</a>
+    <div class="social-login">
+        <p>Or login with:</p>
+        <div class="social-buttons">
+            <a href="#" class="btn-facebook"><i class="fab fa-facebook-f"></i> Login with Facebook</a>
+            <a href="#" class="btn-google"><i class="fab fa-google"></i> Login with Google</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="id_username">Username:</label>
+            {{ form.username }}
+        </div>
+        <div>
+            <label for="id_password">Password:</label>
+            {{ form.password }}
+        </div>
+        <div>
+            <label for="id_user_type">User Type:</label>
+            {{ form.user_type }}
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html> --> 

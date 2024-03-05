@@ -1,0 +1,108 @@
+hotel_listing_form.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Listing Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-submit {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">Hotel Listing Form</div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="title">Title:</label>
+                                        {{ form.title }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location:</label>
+                                        {{ form.location }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description:</label>
+                                        {{ form.description }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">Price:</label>
+                                        {{ form.price }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="available_for_sale">Available for Sale:</label>
+                                        {{ form.available_for_sale }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="available_for_rent">Available for Rent:</label>
+                                        {{ form.available_for_rent }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contact_email">Contact Email:</label>
+                                        {{ form.contact_email }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="image">Image:</label>
+                                        {{ form.image }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Reset some default styles */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container styles */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 50px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .user-info h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .logout-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: auto;
+            /* Pushes the logout link to the bottom of the sidebar */
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {% if user.user_type == 'Client' %}
+        <div class="sidebar">
+            <!-- Client Sidebar Content -->
+            <div class="user-info">
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                    style="width: 100px; height: 100px; border-radius: 50%;">
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                <p>{{user.email}}</p>
+                <h2 style="color: green;">{{ user.user_type}}</h2>
+                <p> UserId:{{user.id}}</p>
+            </div>
+            <ul>
+                <li><a href="{% url 'userprofile' %}">Profile</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
+            </ul>
+        </div>
+        {% elif user.user_type == 'Agent' %}
+        <div class="sidebar">
+            <!-- Agent Sidebar Content -->
+            <div class="user-info">
+                <img src="{{ user.profile_picture.url}}" alt="Profile Picture"
+                    style="width: 100px; height: 100px; border-radius: 50%;">
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                <p>{{user.email}}</p>
+                <h2 style="color: green;">{{ user.user_type}}</h2>
+                <p> UserId:{{user.id}}</p>
+            </div>
+            <ul>
+                <li><a href="{% url 'userprofile' %}">Profile</a></li>
+                <li><a href="#">Sales</a></li>
+                <li><a href="{% url 'houselist' %}">Sell/Rent</a></li>
+                <li><a href="#">Clients</a></li>
+                <li><a href="#">Reservations</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
+            </ul>
+        </div>
+        {% elif user.user_type == 'Company' %}
+        <div class="sidebar">
+            <!-- Company Sidebar Content -->
+            <div class="user-info">
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                    style="width: 100px; height: 100px; border-radius: 50%;">
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                <p>{{user.email}}</p>
+                <h2 style="color: green;">{{ user.user_type}}</h2>
+                <p> UserId:{{user.id}}</p>
+            </div>
+            <ul>
+                <li><a href="{% url 'userprofile' %}">Profile</a></li>
+                <li><a href="#">Loan</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
+            </ul>
+        </div>
+        {% endif %}
+        <div class="main-content">
+            <!-- Main Content -->
+            <div class="user-info">
+                <!-- <h1>Welcome Back! {{ user.username }}</h1> -->
+            </div>
+            <div class="additional-content">
+                <h2>Welcome to DreamHouse {{ user.username }}!</h2>
+                <p>At DreamHouse, we're thrilled to extend a warm and enthusiastic welcome to all our new residents.
+                    Whether you're just moving in or have been part of our community for a short while, we want you to
+                    feel right at home from the moment you arrive.</p>
+                <p>Upon your arrival, you'll be greeted by our friendly team of staff members, ready to assist you with
+                    any questions or concerns you may have. We understand that transitioning to a new environment can
+                    sometimes be daunting, but rest assured, we're here to make your experience as seamless and
+                    enjoyable as possible.</p>
+                <p>As you settle into your new home, you'll quickly discover the vibrant and inclusive atmosphere that
+                    defines life at DreamHouse. From community events and social gatherings to recreational activities
+                    and amenities, there's always something exciting happening here. Whether you're looking to connect
+                    with neighbors, explore the surrounding area, or simply unwind and relax, you'll find countless
+                    opportunities to make the most of your time with us.</p>
+                <p>In addition to our welcoming community, you'll also have access to a range of amenities designed to
+                    enhance your living experience. Whether you're enjoying a refreshing swim in the pool, breaking a
+                    sweat in the fitness center, or simply taking a leisurely stroll through our beautifully landscaped
+                    grounds, you'll find that every aspect of life at DreamHouse is designed with your comfort and
+                    enjoyment in mind.</p>
+                <p>But perhaps most importantly, we want you to know that you're not just a resident here – you're a
+                    valued member of our extended family. From the moment you join us, you'll be welcomed with open arms
+                    and embraced as part of our tight-knit community. Whether you're sharing laughs with neighbors,
+                    lending a helping hand to those in need, or simply enjoying the company of friends old and new,
+                    you'll find that the bonds you forge at DreamHouse will last a lifetime.</p>
+                <p>So once again, welcome to DreamHouse – your home away from home. We're thrilled to have you here,
+                    and we can't wait to embark on this exciting journey together. Here's to new beginnings, cherished
+                    memories, and a lifetime of happiness in our wonderful community. Welcome home!</p>
+            </div>
+            
+        </div>
+    </div>
+</body>
+
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Reset some default styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container styles */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 50px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .user-info {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .user-info h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .user-info p {
+            font-size: 18px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <img src="{{user.profile_picture.url}}" alt="Profile Picture" style="width: 100px; height: 100px; border-radius: 50%;">
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                <p>User ID: {{ user.id }}</p>
+                <p>User Type: {{ user.user_type }}</p>
+            <ul>
+                <li><a href="{url 'userprofile'}">Profile</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+            
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+        <div class="main-content">
+            <div class="user-info">
+               
+                <h1>Welcome Back! {{ user.username }}</h1>
+            </div>
+            <div class="additional-content">
+                <h2>Bio</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam omnis sint neque id adipisci dignissimos labore repellendus quo ducimus. Praesentium laboriosam enim in sint voluptate maxime minus repellat totam quo?</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> -->

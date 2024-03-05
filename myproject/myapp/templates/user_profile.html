@@ -1,0 +1,61 @@
+<!-- change_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">Edit Profile</div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name:</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Email:</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group">
+                                <label for="profile_picture">Profile Picture:</label><br>
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px;"><br>
+                                {{ form.profile_picture }}
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_date">Birth Date:</label>
+                                {{ form.birth_date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number:</label>
+                                {{ form.phone_number }}
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
