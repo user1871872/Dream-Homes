@@ -70,3 +70,8 @@ class LoginForm(forms.Form):
     user_type = forms.ChoiceField(
         choices=(("client", "Client"), ("agent", "Agent"), ("company", "Company"))
     )
+
+class MessageForm(forms.Form):
+    receiver_id = forms.IntegerField(widget=forms.Select)
+    content = forms.CharField(widget=forms.Textarea)
+

@@ -2,16 +2,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, auth
-from django.shortcuts import redirect, render
-
+from django.shortcuts import redirect, render,HttpResponse
 from .forms import (
     CustomUserChangeForm,
     CustomUserCreationForm,
     HotelListingForm,
     LoginForm,
+    MessageForm,
 )
-from .models import HotelListing
-
+from .models import HotelListing,Message,CustomUser
+import logging
 
 # Create your views here.
 def index(request):
@@ -105,6 +105,45 @@ def login(request):
             return redirect("login")
     else:
         return render(request, "login.html")
+    
+
+logger = logging.getLogger(__name__)
+
+@login_required
+def chat_room(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            receiver_id = form.cleaned_data['receiver_id']
+            content = form.cleaned_data['content']
+            receiver = CustomUser.objects.get(id=receiver_id)
+            Message.objects.create(sender=request.user, receiver=receiver, content=content)
+            return redirect('chat_room')
+        else:
+            logger.error("Invalid form data: %s", form.errors)
+    else:
+        form = MessageForm()
+    
+    all_users = CustomUser.objects.exclude(id=request.user.id)  # Exclude current user from the list
+    
+    # Fetch messages exchanged between the current user and the selected recipient
+    receiver_id = request.GET.get('receiver_id')
+    if receiver_id:
+        receiver = CustomUser.objects.get(id=receiver_id)
+        messages = Message.objects.filter(sender=request.user, receiver=receiver) | Message.objects.filter(sender=receiver, receiver=request.user)
+    else:
+        messages = []
+    
+    return render(request, 'chat.html', {'form': form, 'all_users': all_users, 'messages': messages})
+
+
+@login_required
+def get_messages(request, receiver_id):
+    receiver = CustomUser.objects.get(id=receiver_id)
+    messages = Message.objects.filter(sender=request.user, receiver=receiver) | Message.objects.filter(sender=receiver, receiver=request.user)
+    return render(request, 'chat.html', {'messages': messages, 'receiver_id': receiver_id})
+
+
     # if request.method == "POST":
     #     username = request.POST.get("username")
     #     password = request.POST.get("password")

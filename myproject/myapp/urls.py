@@ -13,4 +13,6 @@ urlpatterns = [
     path("userprofile/", views.updateprofiles, name="userprofile"),
     path("approval/", views.approval, name="approval"),
     path("houselist/", views.houselisting, name="houselist"),
+    path('chat/', views.chat_room, name='chat_room'),
+    path('chat/<int:receiver_id>/', views.chat_room, name='chat_room_with_receiver'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
