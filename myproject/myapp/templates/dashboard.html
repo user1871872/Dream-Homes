@@ -115,7 +115,8 @@
             </div>
             <ul>
                 <li><a href="{% url 'userprofile' %}">Profile</a></li>
-                <li><a href="#">Messages</a></li>
+                <li><a href="{% url 'chats'%}">Messages API</a></li>
+                <li><a href="{% url 'chat_room'%}">Messages ORM</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
             </ul>
@@ -137,7 +138,8 @@
                 <li><a href="{% url 'houselist' %}">Sell/Rent</a></li>
                 <li><a href="#">Clients</a></li>
                 <li><a href="#">Reservations</a></li>
-                <li><a href="#">Messages</a></li>
+                <li><a href="{% url 'chats'%}">Messages API</a></li>
+                <li><a href="{% url 'chat_room'%}">Messages ORM</a></li>
                 <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
             </ul>
         </div>

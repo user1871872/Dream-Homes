@@ -39,7 +39,21 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "myapp",
     "crispy_forms",
+    'rest_framework',
 ]
+
+# settings.py
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'myapp.custom_auth.WebsiteSessionAuthentication',
+        # Add any other authentication classes if needed
+    ],
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

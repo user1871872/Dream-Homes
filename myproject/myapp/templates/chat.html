@@ -50,7 +50,6 @@
         }
         .input-group {
             display: flex;
-            align-items: center; /* Align items vertically */
             margin-bottom: 20px;
         }
         .input-group textarea {
@@ -59,7 +58,6 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-            resize: vertical; /* Allow vertical resizing */
         }
         .input-group button {
             padding: 10px 20px;
@@ -69,7 +67,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-left: 10px; /* Add margin between textarea and button */
         }
         .input-group button:hover {
             background-color: #45a049;
@@ -116,7 +113,7 @@
 <body>
     <div class="container">
         <div class="user-list">
-            <h2 style="text-align: center;">User List</h2>
+            <h2>User List</h2>
             <ul class="recipient-list">
                 {% for user in all_users %}
                     <a href="{% url 'chat_room' %}?receiver_id={{ user.id }}">
@@ -126,9 +123,9 @@
             </ul>
         </div>
         <div class="chat-area">
-            <h2 style="text-align: center;">Chat</h2>
+            <h2>Chat</h2>
             <div class="chat-box">
-                {% for message in messages %}
+                {% for message in messages reversed %}
                     <div class="message {% if message.sender == request.user %}sender{% else %}receiver{% endif %}">
                         {{ message.content }}
                     </div>
@@ -148,150 +145,3 @@
     </div>
 </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Chat Room</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            max-width: 800px;
-            margin: auto;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .user-list {
-            flex: 1;
-            padding-right: 20px;
-        }
-        .chat-area {
-            flex: 2;
-            padding-left: 20px;
-            border-left: 1px solid #ccc;
-        }
-        .chat-box {
-            overflow-y: scroll;
-            max-height: 300px;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .message {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .message.sender {
-            background-color: #DCF8C6;
-            text-align: right;
-        }
-        .message.receiver {
-            background-color: #E5E5EA;
-        }
-        .input-group {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .input-group textarea {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .input-group button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .input-group button:hover {
-            background-color: #45a049;
-        }
-        .recipient-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .recipient-list li {
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease;
-        }
-        .recipient-list li:hover {
-            background-color: #f0f0f0;
-        }
-    a{
-        text-decoration: none;
-        color: black;
-        text-align: center;
-    }
-    .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Hover effect */
-        .button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="user-list">
-            <h2>User List</h2>
-            <ul class="recipient-list">
-                {% for user in all_users %}
-                    <a href="{% url 'chat_room' %}?receiver_id={{ user.id }}">
-                        <li>{{ user.username }}</li>
-                    </a>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="chat-area">
-            <h2>Chat</h2>
-            <div class="chat-box">
-                {% for message in messages %}
-                    <div class="message {% if message.sender == request.user %}sender{% else %}receiver{% endif %}">
-                        {{ message.content }}
-                    </div>
-                {% endfor %}
-            </div>
-            <form method="POST" action="{% url 'chat_room' %}">
-                {% csrf_token %}
-                {% if request.GET.receiver_id %}
-                    <input type="hidden" name="receiver_id" value="{{ request.GET.receiver_id }}">
-                    <textarea name="content" rows="4" cols="50" placeholder="Type your message here..."></textarea>
-                    <button type="submit" class="button">Send</button>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-</body>
-</html> -->

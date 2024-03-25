@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .user-list {
+            flex: 1;
+            padding-top: 20px;
+        }
+        .chat-area {
+            flex: 2;
+            padding-left: 20px;
+            border-left: 1px solid #ccc;
+        }
+        .chat-box {
+            overflow-y: scroll;
+            max-height: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .message {
+            display: flex; /* Use flexbox layout */
+            align-items: center; /* Center items vertically */
+            margin-bottom: 10px; /* Adjust margin as needed */
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .message .profile-picture {
+             margin-right: 10px; /* Adjust margin between image and text */
+        }
+        .message.sender {
+            justify-content: flex-end;
+            background-color: #378CE7;
+            padding: 20px;
+        }
+        .message.receiver {
+            background-color: #E5E5EA;
+            padding: 20px;
+            align-self: flex-start; 
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-group textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .input-group button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .input-group button:hover {
+            background-color: #45a049;
+        }
+        .recipient-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .recipient-list li {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .recipient-list li:hover {
+            background-color: #f0f0f0;
+        }
+        .profile-picture {
+        width: 40px; /* Adjust the size as needed */
+        height: 40px; /* Adjust the size as needed */
+        border-radius: 50%; /* Make it circular */
+        margin-right: 20px; 
+        }
+        /* Style for message timestamp */
+        .timestamp {
+            font-size: 8px; /* Adjust font size as needed */
+            color: black; /* Adjust color as needed */
+            margin-top: 2px; /* Spacing between message content and timestamp */
+            position: absolute; /* Set position to absolute */
+            bottom: 0; /* Position the timestamp at the bottom of the message container */
+            right: 0; /* Position the timestamp at the right side of the message container */
+        }
+        .user-info {
+    display: flex;
+    align-items: center;
+}
+.username {
+    flex: 1;
+}
+.user-item {
+    margin-bottom: 10px;
+}
+.recipient-list {
+    list-style: none;
+    padding: 0;
+}
+.current-user{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.current-user img{
+    border: 2px solid;
+}
+.search {
+    margin-bottom: 20px;
+}
+
+.search input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: dodgerblue;
+}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="user-list">
+        <div class="current-user">
+            <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+            <span class="username">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+        </div>
+        <ul class="recipient-list">
+           <div class="search">
+            <input type="text" name="search" placeholder="Search User"/>
+           </div>
+            {% for user in users %}
+            <li class="user-item" data-user-id="{{ user.id }}">
+                <div class="user-info">
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+                    <span class="username">{{ user.first_name }} {{ user.last_name }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+
+    <div class="chat-area">
+        <!-- Chat area content goes here -->
+        <div class="chat-box" id="message-container">
+            <!-- Messages will be displayed here -->
+        </div>
+        
+        <form class="input-group" id="message-form">
+            {% csrf_token %}
+            <!-- Input field for message content -->
+            <textarea id="message-input" placeholder="Type your message..."></textarea>
+
+            <!-- Hidden input field for recipient ID -->
+            <input type="hidden" id="recipient-id-input" name="recipient_id">
+
+            <!-- Button to submit the form -->
+            <button type="submit" class="button">Send</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+       // Function to fetch messages for a specific user from the backend
+function fetchUserMessages(userId) {
+    axios.get(`/api/messages/${userId}/`)
+        .then(response => {
+            const messages = response.data;
+            clearMessageContainer(); // Clear message container before appending new messages
+            displayMessages(messages);
+        })
+        .catch(error => {
+            console.error('Error fetching messages:', error);
+        })
+        .finally(() => {
+            // Poll for updates every 5 seconds (adjust as needed)
+            setTimeout(() => fetchUserMessages(userId), 5000);
+        });
+}
+
+
+        // Function to clear the message container
+        function clearMessageContainer() {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = ''; // Clear the message container
+        }
+
+        // Function to format the timestamp
+        function formatTimestamp(timestamp) {
+            // Parse the timestamp string to a Date object
+            const date = new Date(timestamp);
+
+            // Get the components of the date and time
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+
+            // Format the timestamp without milliseconds
+            const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+            return formattedTimestamp;
+        }
+
+    // Function to display messages in the frontend
+    // Function to display messages in the frontend
+    function displayMessages(messages) {
+        console.log(messages); // Log the messages array to check if it includes message IDs
+        const messageContainer = document.getElementById('message-container');
+        const currentUser = '{{ request.user.username }}'; // Get current user's username
+
+        messages.forEach(message => {
+            console.log('Message:', message); // Log the entire message object for inspection
+
+            // Calculate the time difference in minutes since the message was sent
+            const currentTime = new Date();
+            const messageTime = new Date(message.timestamp);
+            const timeDifference = (currentTime - messageTime) / (1000 * 60);
+
+            // Check if the message is sent or received by the current user
+            const isSentByCurrentUser = message.sender === currentUser;
+            const isReceivedByCurrentUser = message.receiver === currentUser;
+
+            // Display the message only if it's sent or received by the current user
+            if (isSentByCurrentUser || isReceivedByCurrentUser) {
+                const messageElement = document.createElement('div');
+
+                // Create an image element for the profile picture
+                const profilePictureElement = document.createElement('img');
+                profilePictureElement.src = message.sender_profile_picture; // Display sender's profile picture
+                profilePictureElement.alt = 'Profile Picture';
+                profilePictureElement.classList.add('profile-picture');
+
+                // Hide the profile picture if the sender is the current user
+                if (message.sender === currentUser) {
+                    profilePictureElement.style.display = 'none';
+                }
+
+                messageElement.appendChild(profilePictureElement);
+
+                // Append the content of the message (assuming it's the message text) to the message element
+                const messageContentElement = document.createElement('span');
+                messageContentElement.textContent = message.content;
+                messageElement.appendChild(messageContentElement);
+
+                // Append the formatted timestamp of the message
+                const timestampElement = document.createElement('span');
+                timestampElement.textContent = formatTimestamp(message.timestamp); // Use formatted timestamp
+                timestampElement.classList.add('timestamp');
+                messageElement.appendChild(timestampElement);
+
+                // Apply different CSS classes based on whether the message is from the current user or not
+                if (message.sender === currentUser) {
+                    messageElement.classList.add('message', 'sender'); // Add class for current user's message
+                } else {
+                    messageElement.classList.add('message', 'receiver'); // Add class for other users' messages
+                }
+
+                // Add edit and unsend buttons for new messages sent by the current user within the time limit
+                if (isSentByCurrentUser && timeDifference <= 5) {
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.classList.add('edit-button');
+            editButton.addEventListener('click', function() {
+                // Allow user to edit the message content
+                const newContent = prompt('Enter new message content:');
+                // Check if newContent is not null and not empty after trimming
+                if (newContent !== null && newContent.trim() !== '') {
+                    // Access message id properly
+                    editMessage(message.id, newContent); // Pass message.id to editMessage function
+                } else {
+                    console.error('Error editing message: Content cannot be empty');
+                }
+            });
+            messageElement.appendChild(editButton);
+
+        // Create the unsend button
+        const unsendButton = document.createElement('button');
+        unsendButton.textContent = 'Unsend';
+        unsendButton.classList.add('unsend-button');
+
+        // Add event listener to the unsend button using arrow function
+        unsendButton.addEventListener('click', () => {
+            // Remove the message from the chat box
+            messageElement.remove();
+            // Log message.id to check its value
+            console.log('Message ID:', message.id);
+            // Access message id properly
+            unsendMessage(message.id); // Pass message.id to unsendMessage function
+        });
+
+        // Append the unsend button to the message element
+        messageElement.appendChild(unsendButton);
+    }
+
+
+                // Append the message element to the bottom of the container
+                messageContainer.appendChild(messageElement);
+                // Scroll to the bottom of the container to display the new message
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+        });
+    }
+    function editMessage(messageId, newContent) {
+        // Check if newContent is empty or contains only whitespace
+        if (!newContent.trim()) {
+            console.error('Error editing message: Content cannot be empty');
+            return; // Don't proceed if content is empty
+        }
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const headers = {
+            'X-CSRFToken': csrfToken
+        };
+
+        // Make sure newContent is sent in the request body
+        axios.put(`/edit-message/${messageId}/`, { content: newContent }, { headers }) // Use axios.put for PUT request
+            .then(response => {
+                console.log(response.data);
+                // Optionally, you can handle the success response here
+            })
+            .catch(error => {
+                console.error('Error editing message:', error);
+                // Optionally, you can handle the error response here
+            });
+    }
+
+
+
+        // Function to unsend a message
+        function unsendMessage(messageId) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const headers = {
+                'X-CSRFToken': csrfToken
+            };
+
+            axios.post(`/unsend-message/${messageId}/`, null, { headers })
+                .then(response => {
+                    console.log(response.data);
+                    // Optionally, you can handle the success response here
+                })
+                .catch(error => {
+                    console.error('Error unsending message:', error);
+                    // Optionally, you can handle the error response here
+                });
+        }
+
+        // Function to send a message to the backend
+        function sendMessage(messageContent, recipientId) {
+            // Retrieve CSRF token from the form
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // Include CSRF token in the request headers
+            const headers = {
+                'X-CSRFToken': csrfToken
+            };
+
+            // Make the POST request with CSRF token included in headers
+            axios.post('/api/messages/', { content: messageContent, receiver: recipientId }, { headers })
+                .then(response => {
+                    // Fetch messages after sending the message
+                    fetchUserMessages(recipientId); // Update messages for the recipient
+                })
+                .catch(error => {
+                    console.error('Error sending message:', error);
+                });
+        }
+        // Fetch messages when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add click event listener to each user list item
+            const userListItems = document.querySelectorAll('.user-item');
+            userListItems.forEach(function(userListItem) {
+                userListItem.addEventListener('click', function() {
+                    // Get the user ID from the data attribute
+                    const userId = this.getAttribute('data-user-id');
+                    // Fetch messages for the selected user
+                    fetchUserMessages(userId);
+
+                    // Set the recipient ID in the hidden input field
+                    if (userId) {
+                        // Set the recipient ID in the hidden input field
+                        document.getElementById('recipient-id-input').value = userId;
+                    } else {
+                        console.error('Recipient ID is undefined');
+                    }
+                });
+            });
+
+            // Add submit event listener to the message form
+            const messageForm = document.getElementById('message-form');
+            messageForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const messageInput = document.getElementById('message-input');
+                const messageContent = messageInput.value.trim();
+
+                // Get the recipient ID from the hidden input field
+                const recipientId = document.getElementById('recipient-id-input').value;
+
+                if (messageContent !== '' && recipientId !== '') {
+                    sendMessage(messageContent, recipientId);
+                    messageInput.value = ''; // Clear the input field after sending
+                }
+            });
+        });
+</script>
+
+</body>
+</html>
